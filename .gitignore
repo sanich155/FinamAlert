@@ -2,3 +2,4 @@
 prediction/
 tickets/
 .idea/
+__pycache__

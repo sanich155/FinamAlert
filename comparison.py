@@ -15,53 +15,6 @@ def create_real_array(exist_file_name):  # создаем проверочный
     # print(real_file_name, real_array)
     return real_array
 
-
-def create_prediction_array(file_path):  # создаем проверяемый массив
-    with open(file_path, 'r') as fp:
-        reader = csv.reader(fp)
-
-        prepeare_list = []
-        t_list = []
-        d_list = []
-        lpr_list = []
-        lp = []
-        hpr_list = []
-        c_list = []
-        prediction = []
-        a = 1
-        for i in reader:
-            prepeare_list.append(i)
-
-        for each in prepeare_list:
-            if a == 1:
-                t_list = t_list + each
-            if a == 2:
-                d_list = d_list + each
-            if a == 3:
-                lpr_list = lpr_list + each
-            if a == 4:
-                hpr_list = hpr_list + each
-            if a == 5:
-                c_list = c_list + each
-            a = a + 1
-            if a == 6:
-                a = 1
-
-        for each in lpr_list:
-            if each != '':
-                lp.append(each)
-            else:
-                lp.append(1)
-
-        prediction.append(t_list)
-        prediction.append(d_list)
-        prediction.append(lp)
-        prediction.append(hpr_list)
-        prediction.append(c_list)
-
-    return prediction
-
-
 def create_prediction_data(prediction_array, num):  # создаем 1 запись из проверяемого массива
     ticker = prediction_array[0][num]
     date = prediction_array[1][num]
@@ -75,7 +28,6 @@ def create_prediction_data(prediction_array, num):  # создаем 1 запи�
             'prediction_price': prediction_price,
             'prediction_action': prediction_action}
 
-
 def find_true_csv(real_file_name):  # ищем по тикерам *.csv-файлы, по которым будем проверять записи
     not_exist = 0
     try:
@@ -85,7 +37,6 @@ def find_true_csv(real_file_name):  # ищем по тикерам *.csv-фай�
         not_exist = []
         return print(real_file_name + ' is not exist')
         # not_exist.append(real_file_name)
-
 
 def find_data(prediction_dict,
               real_array):  # ищем в проверяющем массиве строку, в которой совпадает дата с проверяемой записью
@@ -97,9 +48,11 @@ def find_data(prediction_dict,
         num_row += 1
     return int(f_num_row)
 
-
 def comparison(num_row, prediction_dict,
                real_array):  # сравниваем проверяемую запись с проверяющим массивом по нужным датам начиная со строки, на которой даты совпали
+    result_ticker = []
+    result_prediction = []
+
     if prediction_dict['prediction_action'] == 'Покупать':
         for row in real_array[num_row: int(prediction_dict['invest_horizont']) + int(num_row)]:
             if prediction_dict['prediction_price'] >= row[3]:
@@ -122,29 +75,27 @@ def comparison(num_row, prediction_dict,
         result_array = stack_array(result_ticker, result_prediction)
     return result_array
 
-
 def stack_array(*arrays):
     data = np.stack(arrays)
     return data
 
-
-if __name__ == '__main__':
-    file_path = 'prediction\\prediction_all.csv'  # путь к проверяемому файлу
-    prediction_array = create_prediction_array(file_path)  # создаем проверяемый массив
-    result_ticker = []
-    result_prediction = []
-    result_array = []  # создаем массив с результатами
-    for num in range(len(prediction_array[0])):  # перебираем поочереди записи в проверяемом массиве
-        prediction_dict = create_prediction_data(prediction_array, num)  # создаем проверяемую запись
-        real_file_name = 'tickets\\' + prediction_dict[
-            'ticker'] + '.csv'  # создаем имя проверяющего файла из названия тикера в проверяемой записи
-        exist_file_name = find_true_csv(real_file_name)  # создаем имф файла, который точно существуют
-
-        if exist_file_name:  # из файла который точно существует
-            real_array = create_real_array(exist_file_name)  # создаем проверяющий массив
-            num_row_of_date = find_data(prediction_dict,
-                                        real_array)  # находим номер строки в проверяющем массиве, на которой совпадают даты с проверяемой записью
-            result_array = comparison(num_row_of_date, prediction_dict,
-                                      real_array)  # сравниваем и записываем в массив с результатами название тикера и результат проверки
-
-    print(result_array)
+# if __name__ == '__main__':
+#     file_path = 'prediction\\prediction_all.csv'  # путь к проверяемому файлу
+#     prediction_array = create_prediction_array(file_path)  # создаем проверяемый массив
+#     result_ticker = []
+#     result_prediction = []
+#     result_array = []  # создаем массив с результатами
+#     for num in range(len(prediction_array[0])):  # перебираем поочереди записи в проверяемом массиве
+#         prediction_dict = create_prediction_data(prediction_array, num)  # создаем проверяемую запись
+#         real_file_name = 'tickets\\' + prediction_dict[
+#             'ticker'] + '.csv'  # создаем имя проверяющего файла из названия тикера в проверяемой записи
+#         exist_file_name = find_true_csv(real_file_name)  # создаем имф файла, который точно существуют
+#
+#         if exist_file_name:  # из файла который точно существует
+#             real_array = create_real_array(exist_file_name)  # создаем проверяющий массив
+#             num_row_of_date = find_data(prediction_dict,
+#                                         real_array)  # находим номер строки в проверяющем массиве, на которой совпадают даты с проверяемой записью
+#             result_array = comparison(num_row_of_date, prediction_dict,
+#                                       real_array)  # сравниваем и записываем в массив с результатами название тикера и результат проверки
+#
+#     print(result_array)
