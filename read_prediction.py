@@ -3,7 +3,6 @@ import csv
 def create_prediction_array(file_path):
     with open(file_path, 'r') as fp:
         reader = csv.reader(fp)
-
         prepeare_list = []
         t_list = []
         d_list = []
@@ -15,7 +14,6 @@ def create_prediction_array(file_path):
         a = 1
         for i in reader:
             prepeare_list.append(i)
-
         for each in prepeare_list:
             if a == 1:
                 t_list = t_list + each
@@ -30,17 +28,14 @@ def create_prediction_array(file_path):
             a = a + 1
             if a == 6:
                 a = 1
-
         for each in lpr_list:
             if each != '':
                 lp.append(each)
             else:
                 lp.append(1)
-
         prediction.append(t_list)
         prediction.append(d_list)
         prediction.append(lp)
         prediction.append(hpr_list)
         prediction.append(c_list)
-
     return prediction
